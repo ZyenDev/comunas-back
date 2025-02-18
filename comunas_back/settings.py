@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'apps.DatosUbicacion',
+    'apps.DatosComunidad',
+    'apps.DatosVivienda',
+    'apps.DatosHabitante',
 ]
 
 MIDDLEWARE = [
@@ -76,17 +80,16 @@ WSGI_APPLICATION = 'comunas_back.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'comunadb',
+        'NAME': 'comunasdb',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': 'https://d5fk50bq-3306.use2.devtunnels.ms/',  # Or the IP address of your MySQL server
-        'PORT': '3306',                                       # Default MySQL port
+        'HOST': 'localhost',
+        'PORT': '3306',
         'OPTIONS': {
         'charset': 'utf8mb4',
         },
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
