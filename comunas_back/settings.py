@@ -37,9 +37,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'apps.DatosUbicacion',
+    'apps.DatosComunidad',
+    'apps.DatosVivienda',
+    'apps.DatosHabitante',
+    'rest_framework',  # Django REST Framework
+    'corsheaders',  # Para CORS
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Habilitar CORS
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -48,6 +55,16 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # URL de desarrollo de tu app React
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ]
+}
 
 ROOT_URLCONF = 'comunas_back.urls'
 
@@ -76,17 +93,16 @@ WSGI_APPLICATION = 'comunas_back.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'comunadb',
+        'NAME': 'comunasdb',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': 'https://d5fk50bq-3306.use2.devtunnels.ms/',  # Or the IP address of your MySQL server
-        'PORT': '3306',                                       # Default MySQL port
+        'HOST': 'localhost',
+        'PORT': '3306',
         'OPTIONS': {
         'charset': 'utf8mb4',
         },
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
