@@ -25,7 +25,6 @@ class Municipio(models.Model):
     class Meta:
         managed = False
         db_table = 'municipio'
-        unique_together = (('nombre', 'id_estado'),)
 
 class Parroquia(models.Model):
     id_parroquia = models.AutoField(primary_key=True)
@@ -35,7 +34,6 @@ class Parroquia(models.Model):
     class Meta:
         managed = False
         db_table = 'parroquia'
-        unique_together = (('nombre', 'id_municipio'),)
 
 
 class Sector(models.Model):
@@ -46,7 +44,6 @@ class Sector(models.Model):
     class Meta:
         managed = False
         db_table = 'sector'
-        unique_together = (('nombre', 'id_parroquia'),)
 
 class Ubicacion(models.Model):
     id_ubicacion = models.AutoField(primary_key=True)
@@ -57,4 +54,3 @@ class Ubicacion(models.Model):
     class Meta:
         managed = False
         db_table = 'ubicacion'
-        unique_together = (('direccion', 'id_sector'),)
