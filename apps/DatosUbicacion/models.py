@@ -52,6 +52,7 @@ class Ubicacion(models.Model):
     id_ubicacion = models.AutoField(primary_key=True)
     direccion = models.CharField(max_length=100)
     id_sector = models.ForeignKey(Sector, models.DO_NOTHING, db_column='id_sector')
+    id_parroquia = models.ForeignKey(Parroquia, models.DO_NOTHING, db_column='id_parroquia')
 
     class Meta:
         managed = False
