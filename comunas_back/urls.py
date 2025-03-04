@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from . import views
 # from rest_framework.documentation import include_docs_urls    OBSOLETO!!!
 
 urlpatterns = [
@@ -24,5 +25,8 @@ urlpatterns = [
     path('api/habitantes/', include('apps.DatosHabitante.urls')),
     path('api/ubicaciones/', include('apps.DatosUbicacion.urls')),
     path('api/viviendas/', include('apps.DatosVivienda.urls')),
+    path('api/login', views.login),
+    path('api/register', views.register),
+    path('api/profile', views.profile),
     # path('docs/', include_docs_urls(title='API Comunas')),    OBSOLETO!!!
 ]
