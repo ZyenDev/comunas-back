@@ -21,4 +21,6 @@ router.register(r'habitantetiposangre', views.HabitanteTipoSangreViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    # Ruta Habitante por Vivienda
+    path('habitantes/vivienda/<int:vivienda_id>/', views.HabitantesPorViviendaView.as_view(), name='habitantes-por-vivienda'),
 ]
