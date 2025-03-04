@@ -88,11 +88,11 @@ class Habitante(models.Model):
     fecha_nacimiento = models.DateField()
     edad = models.IntegerField()
     sexo = models.CharField(max_length=9)
-    discapacidad = models.IntegerField()
+    discapacidad = models.BooleanField()
     id_nacionalidad = models.ForeignKey('Nacionalidad', models.DO_NOTHING, db_column='id_nacionalidad')
     id_pais_origen = models.ForeignKey('PaisOrigen', models.DO_NOTHING, db_column='id_pais_origen', blank=True, null=True)
     id_vivienda = models.ForeignKey(Vivienda, models.DO_NOTHING, db_column='id_vivienda')
-    pertenece_etnia = models.IntegerField()
+    pertenece_etnia = models.BooleanField()
 
     class Meta:
         managed = False

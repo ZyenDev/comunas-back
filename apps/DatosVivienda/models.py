@@ -4,12 +4,12 @@ from apps.DatosComunidad.models import ConsejoComunal
 
 class ServiciosBasicos(models.Model):
     id_servicios = models.AutoField(primary_key=True)
-    agua = models.IntegerField()
-    electricidad = models.IntegerField()
-    gas = models.IntegerField()
-    internet = models.IntegerField()
-    aseo = models.IntegerField()
-    cloaca = models.IntegerField()
+    agua = models.BooleanField()
+    electricidad = models.BooleanField()
+    gas = models.BooleanField()
+    internet = models.BooleanField()
+    aseo = models.BooleanField()
+    cloaca = models.BooleanField()
     id_vivienda = models.ForeignKey('Vivienda', models.DO_NOTHING, db_column='id_vivienda')
 
     class Meta:
@@ -37,7 +37,10 @@ class Telefono(models.Model):
 
 class TipoOcupacionVivienda(models.Model):
     id_tipo_ocupacion = models.AutoField(primary_key=True)
-    nombre = models.CharField(unique=True, max_length=100)
+    vivienda_ocupada = models.BooleanField()
+    subtipo_ocupacion = models.CharField(max_length=35)
+    tiene_documentacion = models.BooleanField()
+    respuesta_otro = models.CharField(max_length=100)
 
     class Meta:
         managed = False
