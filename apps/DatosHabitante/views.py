@@ -69,9 +69,9 @@ class HabitanteTipoSangreViewSet(viewsets.ModelViewSet):
 # Busqueda de buscar Habitante por ID de vivienda.
 
 class HabitantesPorViviendaView(APIView):
-    def get(self, request, vivienda_id):
+    def get(self, request, id_vivienda):
         try:
-            habitantes = Habitante.objects.filter(vivienda_id=vivienda_id)
+            habitantes = Habitante.objects.filter(id_vivienda=id_vivienda)
             serializer = HabitanteSerializer(habitantes, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Habitante.DoesNotExist:
