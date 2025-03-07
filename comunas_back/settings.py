@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'apps.DatosVivienda',
     'apps.DatosHabitante',
     'rest_framework',  # Django REST Framework
-    'rest_framework.authtoken', # Django REST Authtenticator Token 
+    'rest_framework.authtoken',  # Django REST Authtenticator Token
     # 'coreapi', # Para documentación de la API   OBSOLETO!!!
     'corsheaders',  # Para CORS
 ]
@@ -63,9 +63,9 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
-    ]
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
 }
 
 ROOT_URLCONF = 'comunas_back.urls'
@@ -101,7 +101,7 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
-        'charset': 'utf8mb4',
+            'charset': 'utf8mb4',
         },
     }
 }
@@ -152,6 +152,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # https://www.django-rest-framework.org/api-guide/schemas/
 
 #   OBSOLETO!!!
-# REST_FRAMEWORK = { 
+# REST_FRAMEWORK = {
 #     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
 # }
