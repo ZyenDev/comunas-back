@@ -26,6 +26,7 @@ urlpatterns = [
     path('api/ubicaciones/', include('apps.DatosUbicacion.urls')),
     path('api/viviendas/', include('apps.DatosVivienda.urls')),
     path('api/login', views.login),
+    path('api/logout', views.logout),
     path('api/register', views.register),
     path('api/profile', views.profile),
     # path('docs/', include_docs_urls(title='API Comunas')),    OBSOLETO!!!

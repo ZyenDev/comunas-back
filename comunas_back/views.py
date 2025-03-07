@@ -22,6 +22,17 @@ def login(request):
     return Response({"token": token.key, "email": serializer.data}, status=status.HTTP_200_OK)
 
 @api_view(["POST"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def logout(request):
+    try:
+        token = Token.objects.get(user=request.user)
+        token.delete()
+        return Response(status=status.HTTP_200_OK)
+    except Token.DoesNotExist:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["POST"])
 def register(request):
     serializer = UserSerializer(data=request.data)
 

@@ -42,9 +42,9 @@ INSTALLED_APPS = [
     'apps.DatosVivienda',
     'apps.DatosHabitante',
     'rest_framework',  # Django REST Framework
-    'rest_framework.authtoken' # Django REST Authtenticator Token 
+    'rest_framework.authtoken', # Django REST Authtenticator Token 
     # 'coreapi', # Para documentación de la API   OBSOLETO!!!
-    'corsheaders'  # Para CORS
+    'corsheaders',  # Para CORS
 ]
 
 MIDDLEWARE = [
