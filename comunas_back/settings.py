@@ -42,8 +42,9 @@ INSTALLED_APPS = [
     'apps.DatosVivienda',
     'apps.DatosHabitante',
     'rest_framework',  # Django REST Framework
+    'rest_framework.authtoken',  # Django REST Authtenticator Token
     'drf_yasg',  # Para documentación de la API
-    'corsheaders'  # Para CORS
+    'corsheaders',  # Para CORS
 ]
 
 MIDDLEWARE = [
@@ -62,9 +63,9 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
-    ]
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
 }
 
 ROOT_URLCONF = 'comunas_back.urls'
@@ -100,7 +101,7 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
-        'charset': 'utf8mb4',
+            'charset': 'utf8mb4',
         },
     }
 }
