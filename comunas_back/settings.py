@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'apps.DatosHabitante',
     'rest_framework',  # Django REST Framework
     'rest_framework.authtoken',  # Django REST Authtenticator Token
-    # 'coreapi', # Para documentación de la API   OBSOLETO!!!
+    'drf_yasg',  # Para documentación de la API
     'corsheaders',  # Para CORS
 ]
 
@@ -150,8 +150,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Configuración para documentación de la API
 # https://www.django-rest-framework.org/api-guide/schemas/
-
-#   OBSOLETO!!!
-# REST_FRAMEWORK = {
-#     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
-# }

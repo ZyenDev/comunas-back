@@ -1,4 +1,6 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from .models import Nacionalidad, NivelEstudio, PaisOrigen, Celular, CorreoElectronico, EstadoCivil, Etnia, TipoDiscapacidad, TipoSangre, Habitante, HabitanteDiscapacidad, HabitanteEstadoCivil, HabitanteEtnia, HabitanteNivelEstudio, HabitanteTipoSangre
 from .serializers import NacionalidadSerializer, NivelEstudioSerializer, PaisOrigenSerializer, CelularSerializer, CorreoElectronicoSerializer, EstadoCivilSerializer, EtniaSerializer, TipoDiscapacidadSerializer, TipoSangreSerializer, HabitanteSerializer, HabitanteDiscapacidadSerializer, HabitanteEstadoCivilSerializer, HabitanteEtniaSerializer, HabitanteNivelEstudioSerializer, HabitanteTipoSangreSerializer
 from rest_framework.permissions import IsAuthenticated
@@ -78,3 +80,14 @@ class HabitanteNivelEstudioViewSet(viewsets.ModelViewSet):
 class HabitanteTipoSangreViewSet(viewsets.ModelViewSet):
     queryset = HabitanteTipoSangre.objects.all()
     serializer_class = HabitanteTipoSangreSerializer
+
+# Busqueda de buscar Habitante por ID de vivienda.
+
+class HabitantesPorViviendaView(APIView):
+    def get(self, request, id_vivienda):
+        try:
+            habitantes = Habitante.objects.filter(id_vivienda=id_vivienda)
+            serializer = HabitanteSerializer(habitantes, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Habitante.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
