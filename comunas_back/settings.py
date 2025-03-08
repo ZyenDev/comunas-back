@@ -25,7 +25,7 @@ import os
 SECRET_KEY = os.environ.get('SECRET_KEY', '19387tfnv[p-q9wjdcjqw9wydpap241p-1jkw219w]')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'False'
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ["comunas-back.onrender.com", "localhost"]
 
@@ -61,7 +61,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # URL de desarrollo de tu app React
+    os.environ.get("FRONT_URL"),  # URL de desarrollo de tu app React
 ]
 
 REST_FRAMEWORK = {
