@@ -27,7 +27,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', '19387tfnv[p-q9wjdcjqw9wydpap241p-1jkw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'False'
 
-ALLOWED_HOSTS = ["https://comunas-back.onrender.com", "localhost"]
+ALLOWED_HOSTS = ["comunas-back.onrender.com", "localhost"]
 
 
 # Application definition
