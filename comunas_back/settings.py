@@ -15,17 +15,19 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+import os
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(-sg^y8&scp39lo=(n9%_l83b&cl6amvkl7*dmwd-jpgm@b)8_'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'clave-por-defecto-insegura')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'False'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["https://comunas-back.onrender.com", "localhost"]
 
 
 # Application definition
@@ -95,11 +97,11 @@ WSGI_APPLICATION = 'comunas_back.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'comunasdb',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': 'comunasdb_sweptletno',
+        'USER': 'comunasdb_sweptletno',
+        'PASSWORD': '271223f5c4463611a546466dd216cb955d85c9a6',
+        'HOST': 'qgo09.h.filess.io',
+        'PORT': '3307',
         'OPTIONS': {
             'charset': 'utf8mb4',
         },
