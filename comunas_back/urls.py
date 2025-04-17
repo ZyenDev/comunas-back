@@ -41,7 +41,10 @@ urlpatterns = [
     path('api/viviendas/', include('apps.DatosVivienda.urls')),
     path('api/login', views.login),
     path('api/logout', views.logout),
-    path('api/register', views.register),
+    path('api/register', views.register_admin),
+    path('api/register', views.admin_register_parlamentario),
+    path('api/register', views.parlamentario_register_vocero),
+    path('api/register', views.vocero_register_habitante),
     path('api/profile', views.profile),
     path('docs/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
