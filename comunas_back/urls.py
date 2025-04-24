@@ -45,8 +45,9 @@ urlpatterns = [
     path('api/register/parlamentario', views.admin_register_parlamentario),
     path('api/register/vocero', views.parlamentario_register_vocero),
     path('api/register/habitante', views.vocero_register_habitante),
-    path('api/disable_user', views.toggle_user_status),
+    path('api/toggle_user', views.toggle_user_status),
     path('api/groups/<str:group_name>/users/', views.get_users_by_group),
     path('api/profile', views.profile),
+    path('api/dashboard', views.Dashboard),
     path('docs/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]

@@ -6,7 +6,7 @@ class UserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password', 'group']
+        fields = ['id', 'username', 'email', 'password', 'group', 'is_active']
     
     def get_group(self, obj):
         # Obtiene el primer grupo del usuario, si existe
