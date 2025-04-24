@@ -58,6 +58,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# CORS_ALLOW_ALL_ORIGINS = True
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # URL de desarrollo de tu app React
 ]
@@ -95,11 +97,11 @@ WSGI_APPLICATION = 'comunas_back.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'comunasdb',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': 'comunasdb_sweptletno',
+        'USER': 'comunasdb_sweptletno',
+        'PASSWORD': '271223f5c4463611a546466dd216cb955d85c9a6',
+        'HOST': 'qgo09.h.filess.io',
+        'PORT': '3307',
         'OPTIONS': {
             'charset': 'utf8mb4',
         },
