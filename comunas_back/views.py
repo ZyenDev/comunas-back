@@ -50,6 +50,11 @@ def register_admin(request):
         user.is_superuser = True  # Para permisos totales
         user.save()
 
+        # Asignar el grupo "Administrador" directamente
+        group_name = "Administrador"  # Nombre del grupo que deseas asignar
+        group, created = Group.objects.get_or_create(name=group_name)
+        user.groups.add(group)
+
         token = Token.objects.create(user=user)
         return Response({"token": token.key, "user": serializer.data}, status=status.HTTP_201_CREATED)
 
