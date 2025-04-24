@@ -39,6 +39,7 @@ urlpatterns = [
     path('api/habitantes/', include('apps.DatosHabitante.urls')),
     path('api/ubicaciones/', include('apps.DatosUbicacion.urls')),
     path('api/viviendas/', include('apps.DatosVivienda.urls')),
+    path('api/reportes/', include('apps.DatosReportes.urls')),
     path('api/login', views.login),
     path('api/logout', views.logout),
     path('api/register/admin', views.register_admin),

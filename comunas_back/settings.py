@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'apps.DatosComunidad',
     'apps.DatosVivienda',
     'apps.DatosHabitante',
+    'apps.DatosReportes',
     'rest_framework',  # Django REST Framework
     'rest_framework.authtoken',  # Django REST Authtenticator Token
     'drf_yasg',  # Para documentación de la API

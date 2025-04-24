@@ -5,9 +5,10 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import status
 from .serializers import UserSerializer
-from .permissions import IsParlamentario, IsVocero, IsAdminOrParlamentarioOrVocero
+from .permissions import IsParlamentario, IsVocero, IsAdminOrParlamentarioOrVocero, IsAdminOrParlamentarioOrVoceroOrHabitante
 from django.contrib.auth.models import User, Group
 from django.shortcuts import get_object_or_404
+from django.apps import apps
 
 
 @api_view(["POST"])
@@ -37,6 +38,8 @@ def logout(request):
 
 
 @api_view(["POST"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def register_admin(request):
     serializer = UserSerializer(data=request.data)
 
@@ -49,6 +52,11 @@ def register_admin(request):
         user.is_superuser = True  # Para permisos totales
         user.save()
 
+        # Asignar el grupo "Administrador" directamente
+        group_name = "Administrador"  # Nombre del grupo que deseas asignar
+        group, created = Group.objects.get_or_create(name=group_name)
+        user.groups.add(group)
+
         token = Token.objects.create(user=user)
         return Response({"token": token.key, "user": serializer.data}, status=status.HTTP_201_CREATED)
 
@@ -57,7 +65,6 @@ def register_admin(request):
 
 @api_view(["POST"])
 @authentication_classes([TokenAuthentication])
-# Solo administradores pueden acceder
 @permission_classes([IsAuthenticated, IsAdminUser])
 def admin_register_parlamentario(request):
     serializer = UserSerializer(data=request.data)
@@ -170,3 +177,46 @@ def get_users_by_group(request, group_name):
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Group.DoesNotExist:
         return Response({"error": f"El grupo '{group_name}' no existe."}, status=status.HTTP_404_NOT_FOUND)
+
+
+# Esta vista devuelve la cantidad de registros de cada modelo en el proyecto.
+@api_view(["GET"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, IsAdminOrParlamentarioOrVoceroOrHabitante])  # Solo administradores pueden acceder
+def reportes(request):
+    """
+    Devuelve la cantidad de registros específicos:
+    - Número de habitantes
+    - Número de parlamentarios
+    - Número de voceros
+    - Número de administradores
+    - Número de viviendas
+    - Número de comunas
+    - Número de consejos comunales
+    """
+    # Obtener los modelos específicos
+    Comunidad = apps.get_model('DatosComunidad', 'Comuna')  # Modelo Comunidad
+    Vivienda = apps.get_model('DatosVivienda', 'Vivienda')  # Modelo Vivienda
+    ConsejoComunal = apps.get_model('DatosComunidad', 'ConsejoComunal')  # Modelo ConsejoComunal
+
+    # Contar registros
+    numero_habitantes = User.objects.filter(groups__name="Habitante").count()
+    numero_parlamentarios = User.objects.filter(groups__name="Parlamentario").count()
+    numero_voceros = User.objects.filter(groups__name="Vocero").count()
+    numero_administradores = User.objects.filter(is_staff=True).count()
+    numero_viviendas = Vivienda.objects.count()
+    numero_comunas = Comunidad.objects.count()
+    numero_consejos_comunales = ConsejoComunal.objects.count()
+
+    # Construir el reporte
+    report = {
+        "numero_habitantes": numero_habitantes,
+        "numero_parlamentarios": numero_parlamentarios,
+        "numero_voceros": numero_voceros,
+        "numero_administradores": numero_administradores,
+        "numero_viviendas": numero_viviendas,
+        "numero_comunas": numero_comunas,
+        "numero_consejos_comunales": numero_consejos_comunales,
+    }
+
+    return Response(report, status=200)
