@@ -38,6 +38,8 @@ def logout(request):
 
 
 @api_view(["POST"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def register_admin(request):
     serializer = UserSerializer(data=request.data)
 
