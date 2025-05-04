@@ -21,7 +21,7 @@ class Comuna(models.Model):
 
 class ConsejoComunal(models.Model):
     id_consejo_comunal = models.AutoField(primary_key=True)
-    codigo_situr = models.CharField(unique=True, max_length=20)
+    codigo_situr = models.CharField(unique=True, max_length=21)
     rif = models.CharField(unique=True, max_length=20)
     fecha_creacion = models.DateField(auto_now_add=True)
     fecha_actualizacion = models.DateField(auto_now=True)
