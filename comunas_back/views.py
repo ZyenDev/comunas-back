@@ -65,7 +65,6 @@ def register_admin(request):
 
 @api_view(["POST"])
 @authentication_classes([TokenAuthentication])
-# Solo administradores pueden acceder
 @permission_classes([IsAuthenticated, IsAdminUser])
 def admin_register_parlamentario(request):
     serializer = UserSerializer(data=request.data)

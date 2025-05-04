@@ -28,6 +28,11 @@ class IsAdminOrParlamentarioOrVocero(BasePermission):
             )
         )
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> reportes
 class IsAdminOrParlamentarioOrVoceroOrHabitante(BasePermission):
     """
     Permite el acceso si el usuario es administrador, parlamentario o vocero.
