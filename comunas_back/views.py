@@ -180,43 +180,43 @@ def get_users_by_group(request, group_name):
 
 
 # Esta vista devuelve la cantidad de registros de cada modelo en el proyecto.
-@api_view(["GET"])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated, IsAdminOrParlamentarioOrVoceroOrHabitante])  # Solo administradores pueden acceder
-def reportes(request):
-    """
-    Devuelve la cantidad de registros específicos:
-    - Número de habitantes
-    - Número de parlamentarios
-    - Número de voceros
-    - Número de administradores
-    - Número de viviendas
-    - Número de comunas
-    - Número de consejos comunales
-    """
-    # Obtener los modelos específicos
-    Comunidad = apps.get_model('DatosComunidad', 'Comuna')  # Modelo Comunidad
-    Vivienda = apps.get_model('DatosVivienda', 'Vivienda')  # Modelo Vivienda
-    ConsejoComunal = apps.get_model('DatosComunidad', 'ConsejoComunal')  # Modelo ConsejoComunal
+# @api_view(["GET"])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated, IsAdminOrParlamentarioOrVoceroOrHabitante])  # Solo administradores pueden acceder
+# def reportes(request):
+#     """
+#     Devuelve la cantidad de registros específicos:
+#     - Número de habitantes
+#     - Número de parlamentarios
+#     - Número de voceros
+#     - Número de administradores
+#     - Número de viviendas
+#     - Número de comunas
+#     - Número de consejos comunales
+#     """
+#     # Obtener los modelos específicos
+#     Comunidad = apps.get_model('DatosComunidad', 'Comuna')  # Modelo Comunidad
+#     Vivienda = apps.get_model('DatosVivienda', 'Vivienda')  # Modelo Vivienda
+#     ConsejoComunal = apps.get_model('DatosComunidad', 'ConsejoComunal')  # Modelo ConsejoComunal
 
-    # Contar registros
-    numero_habitantes = User.objects.filter(groups__name="Habitante").count()
-    numero_parlamentarios = User.objects.filter(groups__name="Parlamentario").count()
-    numero_voceros = User.objects.filter(groups__name="Vocero").count()
-    numero_administradores = User.objects.filter(is_staff=True).count()
-    numero_viviendas = Vivienda.objects.count()
-    numero_comunas = Comunidad.objects.count()
-    numero_consejos_comunales = ConsejoComunal.objects.count()
+#     # Contar registros
+#     numero_habitantes = User.objects.filter(groups__name="Habitante").count()
+#     numero_parlamentarios = User.objects.filter(groups__name="Parlamentario").count()
+#     numero_voceros = User.objects.filter(groups__name="Vocero").count()
+#     numero_administradores = User.objects.filter(is_staff=True).count()
+#     numero_viviendas = Vivienda.objects.count()
+#     numero_comunas = Comunidad.objects.count()
+#     numero_consejos_comunales = ConsejoComunal.objects.count()
 
-    # Construir el reporte
-    report = {
-        "numero_habitantes": numero_habitantes,
-        "numero_parlamentarios": numero_parlamentarios,
-        "numero_voceros": numero_voceros,
-        "numero_administradores": numero_administradores,
-        "numero_viviendas": numero_viviendas,
-        "numero_comunas": numero_comunas,
-        "numero_consejos_comunales": numero_consejos_comunales,
-    }
+#     # Construir el reporte
+#     report = {
+#         "numero_habitantes": numero_habitantes,
+#         "numero_parlamentarios": numero_parlamentarios,
+#         "numero_voceros": numero_voceros,
+#         "numero_administradores": numero_administradores,
+#         "numero_viviendas": numero_viviendas,
+#         "numero_comunas": numero_comunas,
+#         "numero_consejos_comunales": numero_consejos_comunales,
+#     }
 
-    return Response(report, status=200)
+#     return Response(report, status=200)

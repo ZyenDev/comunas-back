@@ -225,7 +225,7 @@ class ReporteBasicoViewSet(ViewSet):
 
 
 # Esta vista devuelve la cantidad de registros de cada modelo en el proyecto.
-@permission_classes([IsAuthenticated])  # Solo administradores pueden acceder
+@permission_classes([IsAuthenticated])
 class DashboardViewSet(ViewSet):
     def list(self, request):
         Comunidad = apps.get_model('DatosComunidad', 'Comuna')
