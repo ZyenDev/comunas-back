@@ -15,19 +15,17 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-import os
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', '19387tfnv[p-q9wjdcjqw9wydpap241p-1jkw219w]')
+SECRET_KEY = 'django-insecure-(-sg^y8&scp39lo=(n9%_l83b&cl6amvkl7*dmwd-jpgm@b)8_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
+DEBUG = True
 
-ALLOWED_HOSTS = ["comunas-back.onrender.com", "localhost"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -43,6 +41,7 @@ INSTALLED_APPS = [
     'apps.DatosComunidad',
     'apps.DatosVivienda',
     'apps.DatosHabitante',
+    'apps.DatosReportes',
     'rest_framework',  # Django REST Framework
     'rest_framework.authtoken',  # Django REST Authtenticator Token
     'drf_yasg',  # Para documentación de la API
@@ -63,7 +62,7 @@ MIDDLEWARE = [
 # CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
-    os.environ.get("FRONT_URL"),  # URL de desarrollo de tu app React
+    "http://localhost:5173",  # URL de desarrollo de tu app React
 ]
 
 REST_FRAMEWORK = {
