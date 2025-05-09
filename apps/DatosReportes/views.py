@@ -77,10 +77,7 @@ from rest_framework.viewsets import ViewSet
 
 # Solo usuarios autenticados pueden acceder
 @permission_classes([IsAuthenticated])
-# Corrección para permitir sacar habitantes con discapacidad sin necesidad de consejo comunal
 class ReporteBasicoViewSet(ViewSet):
-
-    # Esta vista es para parlamentarios
     """
     ViewSet para generar reportes de parlamentarios, sin necesidad de consejo comunal asignado.
     """
@@ -92,31 +89,28 @@ class ReporteBasicoViewSet(ViewSet):
         # Obtener modelos
         Vivienda = apps.get_model('DatosVivienda', 'Vivienda')
         ServiciosBasicos = apps.get_model('DatosVivienda', 'ServiciosBasicos')
-        HabitanteDiscapacidad = apps.get_model(
-            'DatosHabitante', 'HabitanteDiscapacidad')
+        HabitanteDiscapacidad = apps.get_model('DatosHabitante', 'HabitanteDiscapacidad')
         Habitante = apps.get_model('DatosHabitante', 'Habitante')
 
         # Obtener parámetros de la solicitud
-        tipo_reporte = request.data.get(
-            "tipo_reporte")  # Tipo de reporte solicitado
-        
+        tipo_reporte = request.data.get("tipo_reporte")  # Tipo de reporte solicitado
+
         # Generar el reporte según el tipo solicitado
         if tipo_reporte == "habitantes":
             habitantes = Habitante.objects.all()
-
             data = list(habitantes.values())
             return Response({"tipo_reporte": "habitantes", "data": data}, status=200)
 
         elif tipo_reporte == "viviendas":
             viviendas = Vivienda.objects.all()
-        
+
             data = []
             for vivienda in viviendas:
                 # Obtener los servicios básicos relacionados con la vivienda
                 servicios_basicos = ServiciosBasicos.objects.filter(id_vivienda=vivienda.id_vivienda).values(
                     'id_servicios', 'agua', 'electricidad', 'gas', 'internet', 'aseo', 'cloaca'
                 ).first()  # Obtener el primer registro de servicios básicos (si existe)
-        
+
                 # Construir la respuesta para cada vivienda
                 data.append({
                     "id_vivienda": vivienda.id_vivienda,
@@ -143,20 +137,20 @@ class ReporteBasicoViewSet(ViewSet):
                         "cloaca": None
                     }
                 })
-        
+
             return Response({"tipo_reporte": "viviendas", "data": data}, status=200)
 
         elif tipo_reporte == "habitantes_discapacitados":
             # Filtrar habitantes que tienen discapacidad
             habitantes_discapacitados = Habitante.objects.filter(discapacidad=True)
-        
+
             data = []
             for habitante in habitantes_discapacitados:
                 # Obtener las discapacidades relacionadas con el habitante
                 discapacidades = HabitanteDiscapacidad.objects.filter(id_habitante=habitante.id_habitante).select_related('id_tipo_discapacidad').values(
                     'id_tipo_discapacidad__nombre', 'id_tipo_discapacidad__descripcion'
                 )
-        
+
                 # Construir la respuesta para cada habitante
                 data.append({
                     "id": habitante.id_habitante,
@@ -165,12 +159,12 @@ class ReporteBasicoViewSet(ViewSet):
                     "edad": habitante.edad,
                     "discapacidades": list(discapacidades)
                 })
-        
+
             return Response({"tipo_reporte": "habitantes_discapacitados", "data": data}, status=200)
 
         else:
             return Response({"error": "Tipo de reporte no válido."}, status=400)
-
+        
 # # Solo usuarios autenticados pueden acceder
 # @permission_classes([IsAuthenticated])
 # class ReporteVoceroViewSet(ViewSet):
