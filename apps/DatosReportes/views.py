@@ -91,41 +91,52 @@ class ReporteBasicoViewSet(ViewSet):
         """
         # Obtener modelos
         Vivienda = apps.get_model('DatosVivienda', 'Vivienda')
+        ServiciosBasicos = apps.get_model('DatosVivienda', 'ServiciosBasicos')
         Habitante = apps.get_model('DatosHabitante', 'Habitante')
 
         # Obtener parámetros de la solicitud
         tipo_reporte = request.data.get(
             "tipo_reporte")  # Tipo de reporte solicitado
-        rango_edad_min = request.data.get("edad_min")  # Edad mínima (opcional)
-        rango_edad_max = request.data.get("edad_max")  # Edad máxima (opcional)
-
+        
         # Generar el reporte según el tipo solicitado
         if tipo_reporte == "habitantes":
             habitantes = Habitante.objects.all()
 
-            # Aplicar filtros adicionales
-            if rango_edad_min:
-                habitantes = habitantes.filter(edad__gte=int(rango_edad_min))
-            if rango_edad_max:
-                habitantes = habitantes.filter(edad__lte=int(rango_edad_max))
-
-            data = [{"id": h.id_habitante, "primer_nombre": h.primer_nombre, "primer_apellido": h.primer_apellido,
-                     "edad": h.edad} for h in habitantes]
+            data = list(habitantes.values())
             return Response({"tipo_reporte": "habitantes", "data": data}, status=200)
 
         elif tipo_reporte == "viviendas":
             viviendas = Vivienda.objects.all()
 
-            data = [{"id": v.id_vivienda, "direccion": v.numero_vivienda}
-                    for v in viviendas]
+            data = []
+            for vivienda in viviendas:
+                # Obtener los servicios básicos relacionados con la vivienda
+                servicios_basicos = ServiciosBasicos.objects.filter(id_vivienda=vivienda.id_vivienda).values(
+                    'agua', 'electricidad', 'gas', 'internet', 'aseo', 'cloaca'
+                )
+                # Construir la respuesta para cada vivienda
+                data.append({
+                    "id": vivienda.id_vivienda,
+                    "direccion": vivienda.numero_vivienda,
+                    "cantidad_habitantes": vivienda.cantidad_habitantes,
+                    "cantidad_familias": vivienda.cantidad_familias,
+                    "cantidad_banos": vivienda.cantidad_banos,
+                    "cantidad_cuartos": vivienda.cantidad_cuartos,
+                    "tipo_vivienda": vivienda.id_tipo_vivienda.descripcion,
+                    "tipo_techo": vivienda.id_tipo_techo.descripcion,
+                    "tipo_pared": vivienda.id_tipo_pared.descripcion,
+                    "tipo_piso": vivienda.id_tipo_piso.descripcion,
+                    "situacion_vivienda": vivienda.id_situacion_vivienda.descripcion,
+                    "tipo_ocupacion": vivienda.id_tipo_ocupacion_vivienda.subtipo_ocupacion,
+                    "servicios_basicos": list(servicios_basicos)
+                })
             return Response({"tipo_reporte": "viviendas", "data": data}, status=200)
 
         elif tipo_reporte == "habitantes_discapacitados":
             habitantes_discapacitados = Habitante.objects.filter(
                 discapacidad=True)
 
-            data = [{"id": h.id_habitante, "primer_nombre": h.primer_nombre, "primer_apellido": h.primer_apellido,
-                     "discapacidad": h.discapacidad} for h in habitantes_discapacitados]
+            data = list(habitantes_discapacitados.values())
             return Response({"tipo_reporte": "habitantes_discapacitados", "data": data}, status=200)
 
         else:
