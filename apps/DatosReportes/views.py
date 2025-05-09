@@ -119,18 +119,20 @@ class ReporteBasicoViewSet(ViewSet):
         
                 # Construir la respuesta para cada vivienda
                 data.append({
-                    "id": vivienda.id_vivienda,
-                    "direccion": vivienda.numero_vivienda,
+                    "id_vivienda": vivienda.id_vivienda,
+                    "numero_vivienda": vivienda.numero_vivienda,
                     "cantidad_habitantes": vivienda.cantidad_habitantes,
                     "cantidad_familias": vivienda.cantidad_familias,
                     "cantidad_banos": vivienda.cantidad_banos,
                     "cantidad_cuartos": vivienda.cantidad_cuartos,
-                    "tipo_vivienda": vivienda.id_tipo_vivienda.descripcion,
-                    "tipo_techo": vivienda.id_tipo_techo.descripcion,
-                    "tipo_pared": vivienda.id_tipo_pared.descripcion,
-                    "tipo_piso": vivienda.id_tipo_piso.descripcion,
-                    "situacion_vivienda": vivienda.id_situacion_vivienda.descripcion,
-                    "tipo_ocupacion": vivienda.id_tipo_ocupacion_vivienda.subtipo_ocupacion,
+                    "id_ubicacion": vivienda.id_ubicacion.id if vivienda.id_ubicacion else None,
+                    "id_consejo_comunal": vivienda.id_consejo_comunal.id if vivienda.id_consejo_comunal else None,
+                    "id_tipo_vivienda": vivienda.id_tipo_vivienda.id if vivienda.id_tipo_vivienda else None,
+                    "id_tipo_techo": vivienda.id_tipo_techo.id if vivienda.id_tipo_techo else None,
+                    "id_tipo_pared": vivienda.id_tipo_pared.id if vivienda.id_tipo_pared else None,
+                    "id_tipo_piso": vivienda.id_tipo_piso.id if vivienda.id_tipo_piso else None,
+                    "id_situacion_vivienda": vivienda.id_situacion_vivienda.id if vivienda.id_situacion_vivienda else None,
+                    "id_tipo_ocupacion_vivienda": vivienda.id_tipo_ocupacion_vivienda.id if vivienda.id_tipo_ocupacion_vivienda else None,
                     "servicios_basicos": servicios_basicos if servicios_basicos else {
                         "id_servicios": None,
                         "agua": None,
