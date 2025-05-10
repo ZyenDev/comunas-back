@@ -89,11 +89,13 @@ class ReporteBasicoViewSet(ViewSet):
         # Obtener modelos
         Vivienda = apps.get_model('DatosVivienda', 'Vivienda')
         ServiciosBasicos = apps.get_model('DatosVivienda', 'ServiciosBasicos')
-        HabitanteDiscapacidad = apps.get_model('DatosHabitante', 'HabitanteDiscapacidad')
+        HabitanteDiscapacidad = apps.get_model(
+            'DatosHabitante', 'HabitanteDiscapacidad')
         Habitante = apps.get_model('DatosHabitante', 'Habitante')
 
         # Obtener parámetros de la solicitud
-        tipo_reporte = request.data.get("tipo_reporte")  # Tipo de reporte solicitado
+        tipo_reporte = request.data.get(
+            "tipo_reporte")  # Tipo de reporte solicitado
 
         # Generar el reporte según el tipo solicitado
         if tipo_reporte == "habitantes":
@@ -102,15 +104,17 @@ class ReporteBasicoViewSet(ViewSet):
             return Response({"tipo_reporte": "habitantes", "data": data}, status=200)
 
         elif tipo_reporte == "viviendas":
-            viviendas = Vivienda.objects.prefetch_related('servicios_basicos').all()
-        
+            viviendas = Vivienda.objects.prefetch_related(
+                'servicios_basicos').all()
+
             data = []
             for vivienda in viviendas:
                 # Obtener los servicios básicos relacionados con la vivienda
                 servicios_basicos = vivienda.servicios_basicos.values(
                     'id_servicios', 'agua', 'electricidad', 'gas', 'internet', 'aseo', 'cloaca'
-                ).first()  # Obtener el primer registro de servicios básicos (si existe)
-        
+                    # Obtener el primer registro de servicios básicos (si existe)
+                ).first()
+
                 # Construir la respuesta para cada vivienda
                 data.append({
                     "id_vivienda": vivienda.id_vivienda,
@@ -137,12 +141,16 @@ class ReporteBasicoViewSet(ViewSet):
                         "cloaca": None
                     }
                 })
-        
+
+            # Agregar registro de depuración para verificar los datos generados
+            print("Datos generados para el reporte de viviendas:", data)
+
             return Response({"tipo_reporte": "viviendas", "data": data}, status=200)
 
         elif tipo_reporte == "habitantes_discapacitados":
-            # Filtrar habitantes que tienen discapacidad
-            habitantes_discapacitados = Habitante.objects.filter(discapacidad=True)
+            # Definir habitantes_discapacitados correctamente
+            habitantes_discapacitados = Habitante.objects.filter(
+                discapacidad=True)
 
             data = []
             for habitante in habitantes_discapacitados:
@@ -164,7 +172,7 @@ class ReporteBasicoViewSet(ViewSet):
 
         else:
             return Response({"error": "Tipo de reporte no válido."}, status=400)
-        
+
 # # Solo usuarios autenticados pueden acceder
 # @permission_classes([IsAuthenticated])
 # class ReporteVoceroViewSet(ViewSet):

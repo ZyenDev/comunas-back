@@ -62,6 +62,9 @@ class EstadoCivil(models.Model):
     id_estado_civil = models.AutoField(primary_key=True)
     nombre = models.CharField(unique=True, max_length=50)
 
+    def __str__(self):
+        return self.nombre
+
     class Meta:
         managed = False
         db_table = 'estado_civil'
