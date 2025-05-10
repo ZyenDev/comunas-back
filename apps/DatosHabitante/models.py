@@ -37,7 +37,7 @@ class Celular(models.Model):
     codigo_operadora = models.CharField(max_length=5)
     numero = models.CharField(max_length=15)
     id_habitante = models.ForeignKey(
-        'Habitante', models.DO_NOTHING, db_column='id_habitante')
+        'Habitante', models.DO_NOTHING, db_column='id_habitante', related_name='celular_set')
 
     class Meta:
         managed = False
