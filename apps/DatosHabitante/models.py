@@ -37,7 +37,7 @@ class Celular(models.Model):
     codigo_operadora = models.CharField(max_length=5)
     numero = models.CharField(max_length=15)
     id_habitante = models.ForeignKey(
-        'Habitante', models.DO_NOTHING, db_column='id_habitante')
+        'Habitante', models.DO_NOTHING, db_column='id_habitante', related_name='celular_set')
 
     class Meta:
         managed = False
@@ -61,6 +61,9 @@ class CorreoElectronico(models.Model):
 class EstadoCivil(models.Model):
     id_estado_civil = models.AutoField(primary_key=True)
     nombre = models.CharField(unique=True, max_length=50)
+
+    def __str__(self):
+        return self.nombre
 
     class Meta:
         managed = False

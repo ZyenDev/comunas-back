@@ -12,7 +12,7 @@ class ServiciosBasicos(models.Model):
     aseo = models.BooleanField()
     cloaca = models.BooleanField()
     id_vivienda = models.ForeignKey(
-        'Vivienda', models.DO_NOTHING, db_column='id_vivienda')
+        'Vivienda', models.DO_NOTHING, db_column='id_vivienda', related_name='servicios_basicos')
 
     class Meta:
         managed = False
@@ -47,7 +47,7 @@ class Telefono(models.Model):
 class TipoOcupacionVivienda(models.Model):
     id_tipo_ocupacion = models.AutoField(primary_key=True)
     vivienda_ocupada = models.BooleanField()
-    subtipo_ocupacion = models.CharField(max_length=35)
+    subtipo_ocupacion = models.IntegerField(max_length=35)
     tiene_documentacion = models.BooleanField()
     respuesta_otro = models.CharField(max_length=100)
 
