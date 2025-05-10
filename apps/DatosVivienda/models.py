@@ -12,7 +12,7 @@ class ServiciosBasicos(models.Model):
     aseo = models.BooleanField()
     cloaca = models.BooleanField()
     id_vivienda = models.ForeignKey(
-        'Vivienda', models.DO_NOTHING, db_column='id_vivienda')
+        'Vivienda', models.DO_NOTHING, db_column='id_vivienda', related_name='servicios_basicos')
 
     class Meta:
         managed = False
