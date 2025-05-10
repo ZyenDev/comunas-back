@@ -102,15 +102,15 @@ class ReporteBasicoViewSet(ViewSet):
             return Response({"tipo_reporte": "habitantes", "data": data}, status=200)
 
         elif tipo_reporte == "viviendas":
-            viviendas = Vivienda.objects.all()
-
+            viviendas = Vivienda.objects.prefetch_related('servicios_basicos').all()
+        
             data = []
             for vivienda in viviendas:
                 # Obtener los servicios básicos relacionados con la vivienda
-                servicios_basicos = ServiciosBasicos.objects.filter(id_vivienda=vivienda.id_vivienda).values(
+                servicios_basicos = vivienda.servicios_basicos.values(
                     'id_servicios', 'agua', 'electricidad', 'gas', 'internet', 'aseo', 'cloaca'
                 ).first()  # Obtener el primer registro de servicios básicos (si existe)
-
+        
                 # Construir la respuesta para cada vivienda
                 data.append({
                     "id_vivienda": vivienda.id_vivienda,
@@ -137,7 +137,7 @@ class ReporteBasicoViewSet(ViewSet):
                         "cloaca": None
                     }
                 })
-
+        
             return Response({"tipo_reporte": "viviendas", "data": data}, status=200)
 
         elif tipo_reporte == "habitantes_discapacitados":
