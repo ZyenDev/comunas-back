@@ -98,13 +98,16 @@ WSGI_APPLICATION = 'comunas_back.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'comunastest',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': 'ComunasTiDB',
+        'USER': '3iU3w4QXiAzPzwt.root',
+        'PASSWORD': 'gAl3CEGTKQluSTel',
+        'HOST': 'gateway01.us-west-2.prod.aws.tidbcloud.com',
+        'PORT': '4000',
         'OPTIONS': {
             'charset': 'utf8mb4',
+            'ssl': {
+                'ca': '/certs/isrgrootx1.pem',
+            },
         },
     }
 }
