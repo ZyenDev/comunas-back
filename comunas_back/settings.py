@@ -124,7 +124,8 @@ DATABASES = {
         'OPTIONS': {
             'charset': 'utf8mb4',
             'ssl': {
-                'ca': '/certs/isrgrootx1.pem',
+                'ca': os.path.join(BASE_DIR, 'certs/isrgrootx1.pem'),  # Ruta absoluta
+                'check_hostname': False  # Necesario para TiDB
             },
         },
     }
