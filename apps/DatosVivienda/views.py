@@ -22,9 +22,7 @@ class TelefonoViewSet(viewsets.ModelViewSet):
     queryset = Telefono.objects.all()
     serializer_class = TelefonoSerializer
 
-# @permission_classes([IsAuthenticated])
-
-
+@permission_classes([IsAuthenticated])
 class TipoOcupacionViviendaViewSet(viewsets.ModelViewSet):
     queryset = TipoOcupacionVivienda.objects.all()
     serializer_class = TipoOcupacionViviendaSerializer
