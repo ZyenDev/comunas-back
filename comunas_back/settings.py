@@ -65,6 +65,21 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # URL de desarrollo de tu app React
 ]
 
+CORS_ALLOW_CREDENTIALS = True  # Si usas cookies/tokens
+
+# Si necesitas headers personalizados
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
