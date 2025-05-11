@@ -100,13 +100,16 @@ WSGI_APPLICATION = 'comunas_back.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'comunasdb_sweptletno',
-        'USER': 'comunasdb_sweptletno',
-        'PASSWORD': '271223f5c4463611a546466dd216cb955d85c9a6',
-        'HOST': 'qgo09.h.filess.io',
-        'PORT': '3307',
+        'NAME': 'ComunasTiDB',
+        'USER': '3iU3w4QXiAzPzwt.root',
+        'PASSWORD': 'gAl3CEGTKQluSTel',
+        'HOST': 'gateway01.us-west-2.prod.aws.tidbcloud.com',
+        'PORT': '4000',
         'OPTIONS': {
             'charset': 'utf8mb4',
+            'ssl': {
+                'ca': '/certs/isrgrootx1.pem',
+            },
         },
     }
 }

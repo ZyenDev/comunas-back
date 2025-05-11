@@ -47,7 +47,7 @@ class Telefono(models.Model):
 class TipoOcupacionVivienda(models.Model):
     id_tipo_ocupacion = models.AutoField(primary_key=True)
     vivienda_ocupada = models.BooleanField()
-    subtipo_ocupacion = models.IntegerField(max_length=35)
+    subtipo_ocupacion = models.IntegerField()
     tiene_documentacion = models.BooleanField()
     respuesta_otro = models.CharField(max_length=100)
 
