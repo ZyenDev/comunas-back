@@ -56,6 +56,36 @@ class HabitanteViewSet(viewsets.ModelViewSet):
     queryset = Habitante.objects.all()
     serializer_class = HabitanteSerializer
 
+    def create(self, request, *args, **kwargs):
+        # 1. Crear el habitante principal
+        response = super().create(request, *args, **kwargs)
+        habitante_id = response.data['id_habitante']
+        habitante = Habitante.objects.get(id_habitante=habitante_id)
+
+        # 2. Guardar el celular si viene en el request
+        celular = request.data.get('celular')
+        codigo_operadora = request.data.get('codigo_operadora')
+        if celular and codigo_operadora:
+            Celular.objects.create(
+                codigo_operadora=codigo_operadora,
+                numero=celular,
+                id_habitante=habitante
+            )
+
+        # 3. Guardar el tipo de sangre si viene en el request
+        tipo_sangre = request.data.get('tipo_sangre')
+        if tipo_sangre:
+            try:
+                tipo_sangre_obj = TipoSangre.objects.get(tipo=tipo_sangre)
+                HabitanteTipoSangre.objects.create(
+                    id_habitante=habitante,
+                    id_tipo_sangre=tipo_sangre_obj
+                )
+            except TipoSangre.DoesNotExist:
+                pass  # O puedes devolver un error si lo prefieres
+
+        return response
+
 @permission_classes([IsAuthenticated])
 class HabitanteDiscapacidadViewSet(viewsets.ModelViewSet):
     queryset = HabitanteDiscapacidad.objects.all()
