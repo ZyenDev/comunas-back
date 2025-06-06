@@ -57,19 +57,17 @@ class TipoSangreSerializer(serializers.ModelSerializer):
 
 
 class HabitanteSerializer(serializers.ModelSerializer):
-    celular = CelularSerializer(source='celular_set', many=True, read_only=True)
-    tipo_sangre = serializers.SerializerMethodField()
+    tipo_sangre = TipoSangreSerializer(
+        source='habitantetiposangre.id_tipo_sangre', read_only=True)
+    celular = CelularSerializer(
+        source='celular_set', many=True, read_only=True)
+    estado_civil = serializers.StringRelatedField(
+        source='habitanteestadocivil.id_estado_civil', read_only=True)
 
     class Meta:
         model = Habitante
-        fields = '__all__'
+        fields = '__all__'  # Include all fields from Habitante and the related fields
 
-    def get_tipo_sangre(self, obj):
-        rel = getattr(obj, 'habitantetiposangre', None)
-        if rel and rel.id_tipo_sangre:
-            return rel.id_tipo_sangre.tipo
-        return None
-    
 
 class HabitanteDiscapacidadSerializer(serializers.ModelSerializer):
     class Meta:
