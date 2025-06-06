@@ -83,7 +83,6 @@ class HabitanteViewSet(viewsets.ModelViewSet):
                 )
             except TipoSangre.DoesNotExist:
                 pass  # O puedes devolver un error si lo prefieres
-
         return response
 
 @permission_classes([IsAuthenticated])

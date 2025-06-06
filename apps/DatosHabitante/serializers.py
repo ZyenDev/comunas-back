@@ -65,15 +65,9 @@ class HabitanteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_tipo_sangre(self, obj):
-        # Manejo robusto para evitar errores si no hay relación o datos
-        try:
-            rel = getattr(obj, 'habitantetiposangre_set', None)
-            if rel:
-                rel = rel.select_related('id_tipo_sangre').first()
-                if rel and rel.id_tipo_sangre:
-                    return rel.id_tipo_sangre.tipo
-        except Exception:
-            pass
+        rel = getattr(obj, 'habitantetiposangre', None)
+        if rel and rel.id_tipo_sangre:
+            return rel.id_tipo_sangre.tipo
         return None
     
 
