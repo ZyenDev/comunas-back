@@ -6,264 +6,157 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ViewSet
 
 
-# @permission_classes([IsAuthenticated])
-# class ReporteAdministradorViewSet(ViewSet):
-#     """
-#     ViewSet para generar reportes de administrador.
-#     """
-
-#     def create(self, request):
-#         """
-#         Genera reportes según los parámetros enviados en la solicitud.
-#         """
-#         # Obtener parámetros de la solicitud
-#         consejo_comunal_id = request.query_params.get(
-#             "consejo_comunal_id")  # ID del consejo comunal
-#         tipo_reporte = request.query_params.get(
-#             "tipo_reporte")  # Tipo de reporte solicitado
-#         rango_edad_min = request.query_params.get(
-#             "edad_min")  # Edad mínima (opcional)
-#         rango_edad_max = request.query_params.get(
-#             "edad_max")  # Edad máxima (opcional)
-
-#         # Obtener modelos
-#         Comunidad = apps.get_model('DatosComunidad', 'Comuna')
-#         Vivienda = apps.get_model('DatosVivienda', 'Vivienda')
-#         ConsejoComunal = apps.get_model('DatosComunidad', 'ConsejoComunal')
-#         Habitante = apps.get_model('DatosHabitante', 'Habitante')
-
-#         # Filtrar por consejo comunal si se proporciona
-#         consejo_comunal = None
-#         if consejo_comunal_id:
-#             consejo_comunal = ConsejoComunal.objects.filter(
-#                 id=consejo_comunal_id).first()
-#             if not consejo_comunal:
-#                 return Response({"error": "Consejo comunal no encontrado."}, status=404)
-
-#         # Generar el reporte según el tipo solicitado
-#         if tipo_reporte == "habitantes":
-#             habitantes = Habitante.objects.all()
-#             if consejo_comunal:
-#                 habitantes = habitantes.filter(consejo_comunal=consejo_comunal)
-
-#             # Aplicar filtros adicionales
-#             if rango_edad_min:
-#                 habitantes = habitantes.filter(edad__gte=int(rango_edad_min))
-#             if rango_edad_max:
-#                 habitantes = habitantes.filter(edad__lte=int(rango_edad_max))
-
-#             data = [{"id": h.id, "nombre": h.nombre, "edad": h.edad}
-#                     for h in habitantes]
-#             return Response({"tipo_reporte": "habitantes", "data": data}, status=200)
-
-#         elif tipo_reporte == "viviendas":
-#             viviendas = Vivienda.objects.all()
-#             if consejo_comunal:
-#                 viviendas = viviendas.filter(consejo_comunal=consejo_comunal)
-
-#             data = [{"id": v.id, "direccion": v.direccion,
-#                      "estado": v.estado} for v in viviendas]
-#             return Response({"tipo_reporte": "viviendas", "data": data}, status=200)
-
-#         elif tipo_reporte == "comuna":
-#             comunas = Comunidad.objects.all()
-#             data = [{"id": c.id, "nombre": c.nombre,
-#                      "descripcion": c.descripcion} for c in comunas]
-#             return Response({"tipo_reporte": "comuna", "data": data}, status=200)
-
-#         else:
-#             return Response({"error": "Tipo de reporte no válido."}, status=400)
-
-
 # Solo usuarios autenticados pueden acceder
 @permission_classes([IsAuthenticated])
-class ReporteBasicoViewSet(ViewSet):
+class ReporteVoceroParlamentario(ViewSet):
     """
     ViewSet para generar reportes de parlamentarios, sin necesidad de consejo comunal asignado.
     """
 
     def create(self, request):
-        """
-        Genera reportes según los parámetros enviados en la solicitud.
-        """
-        # Obtener modelos
-        Vivienda = apps.get_model('DatosVivienda', 'Vivienda')
-        ServiciosBasicos = apps.get_model('DatosVivienda', 'ServiciosBasicos')
-        HabitanteDiscapacidad = apps.get_model(
-            'DatosHabitante', 'HabitanteDiscapacidad')
+        tipo_reporte = request.data.get("tipo_reporte")
+        genero = request.data.get("genero")  # 'M' o 'F' o None
+        consejo_comunal_id = request.data.get("consejo_comunal_id")  # ID del consejo comunal
+
         Habitante = apps.get_model('DatosHabitante', 'Habitante')
+        Discapacidad = apps.get_model('DatosHabitante', 'HabitanteDiscapacidad')
+        Vivienda = apps.get_model('DatosVivienda', 'Vivienda')
 
-        # Obtener parámetros de la solicitud
-        tipo_reporte = request.data.get(
-            "tipo_reporte")  # Tipo de reporte solicitado
+        # Reporte: Todos los habitantes que pertenecen a una etnia
+        if tipo_reporte == "habitantes_etnia":
+            qs = Habitante.objects.exclude(id_etnia=None)
+            if consejo_comunal_id:
+                qs = qs.filter(id_consejo_comunal=consejo_comunal_id)
+            if genero:
+                qs = qs.filter(sexo=genero)
+            data = list(qs.values("id_habitante", "nombre", "apellido", "sexo", "id_etnia__nombre"))
+            return Response({"tipo_reporte": "habitantes_etnia", "data": data}, status=200)
 
-        # Generar el reporte según el tipo solicitado
-        if tipo_reporte == "habitantes":
-            habitantes = Habitante.objects.all()
-            data = list(habitantes.values())
-            return Response({"tipo_reporte": "habitantes", "data": data}, status=200)
+        # Reporte: Todos los habitantes con discapacidad
+        elif tipo_reporte == "habitantes_discapacidad":
+            qs = Habitante.objects.filter(discapacidad=True)
+            if consejo_comunal_id:
+                qs = qs.filter(id_consejo_comunal=consejo_comunal_id)
+            if genero:
+                qs = qs.filter(sexo=genero)
+            data = list(qs.values("id_habitante", "nombre", "apellido", "sexo"))
+            return Response({"tipo_reporte": "habitantes_discapacidad", "data": data}, status=200)
 
-        elif tipo_reporte == "viviendas":
-            viviendas = Vivienda.objects.prefetch_related(
-                'servicios_basicos').all()
+        # Reporte: Todos los habitantes con discapacidad específica
+        elif tipo_reporte == "habitantes_discapacidad_especifica":
+            discapacidad_nombre = request.data.get("discapacidad")
+            qs = Habitante.objects.filter(discapacidad=True, habitantediscapacidad__id_tipo_discapacidad__nombre=discapacidad_nombre)
+            if consejo_comunal_id:
+                qs = qs.filter(id_consejo_comunal=consejo_comunal_id)
+            if genero:
+                qs = qs.filter(sexo=genero)
+            data = list(qs.values("id_habitante", "nombre", "apellido", "sexo", "habitantediscapacidad__id_tipo_discapacidad__nombre"))
+            return Response({"tipo_reporte": "habitantes_discapacidad_especifica", "data": data}, status=200)
 
-            data = []
-            for vivienda in viviendas:
-                # Obtener los servicios básicos relacionados con la vivienda
-                servicios_basicos = vivienda.servicios_basicos.values(
-                    'id_servicios', 'agua', 'electricidad', 'gas', 'internet', 'aseo', 'cloaca'
-                    # Obtener el primer registro de servicios básicos (si existe)
-                ).first()
+        # Reporte: Todos los habitantes de la tercera edad
+        elif tipo_reporte == "habitantes_tercera_edad":
+            qs = Habitante.objects.filter(edad__gte=60)
+            if consejo_comunal_id:
+                qs = qs.filter(id_consejo_comunal=consejo_comunal_id)
+            if genero:
+                qs = qs.filter(sexo=genero)
+            data = list(qs.values("id_habitante", "nombre", "apellido", "sexo", "edad"))
+            return Response({"tipo_reporte": "habitantes_tercera_edad", "data": data}, status=200)
 
-                # Construir la respuesta para cada vivienda
-                data.append({
-                    "id_vivienda": vivienda.id_vivienda,
-                    "numero_vivienda": vivienda.numero_vivienda,
-                    "cantidad_habitantes": vivienda.cantidad_habitantes,
-                    "cantidad_familias": vivienda.cantidad_familias,
-                    "cantidad_banos": vivienda.cantidad_banos,
-                    "cantidad_cuartos": vivienda.cantidad_cuartos,
-                    "id_ubicacion": vivienda.id_ubicacion.id if vivienda.id_ubicacion else None,
-                    "id_consejo_comunal": vivienda.id_consejo_comunal.id if vivienda.id_consejo_comunal else None,
-                    "id_tipo_vivienda": vivienda.id_tipo_vivienda.id if vivienda.id_tipo_vivienda else None,
-                    "id_tipo_techo": vivienda.id_tipo_techo.id if vivienda.id_tipo_techo else None,
-                    "id_tipo_pared": vivienda.id_tipo_pared.id if vivienda.id_tipo_pared else None,
-                    "id_tipo_piso": vivienda.id_tipo_piso.id if vivienda.id_tipo_piso else None,
-                    "id_situacion_vivienda": vivienda.id_situacion_vivienda.id if vivienda.id_situacion_vivienda else None,
-                    "id_tipo_ocupacion_vivienda": vivienda.id_tipo_ocupacion_vivienda.id if vivienda.id_tipo_ocupacion_vivienda else None,
-                    "servicios_basicos": servicios_basicos if servicios_basicos else {
-                        "id_servicios": None,
-                        "agua": None,
-                        "electricidad": None,
-                        "gas": None,
-                        "internet": None,
-                        "aseo": None,
-                        "cloaca": None
-                    }
-                })
+        # Reporte: Todos los habitantes que son jefe de casa
+        elif tipo_reporte == "habitantes_jefe_casa":
+            qs = Habitante.objects.filter(jefe_casa=True)
+            if consejo_comunal_id:
+                qs = qs.filter(id_consejo_comunal=consejo_comunal_id)
+            data = list(qs.values("id_habitante", "nombre", "apellido", "sexo"))
+            return Response({"tipo_reporte": "habitantes_jefe_casa", "data": data}, status=200)
 
-            # Agregar registro de depuración para verificar los datos generados
-            print("Datos generados para el reporte de viviendas:", data)
+        # Reporte: Todos los habitantes menores de edad
+        elif tipo_reporte == "habitantes_menores_edad":
+            qs = Habitante.objects.filter(edad__lt=18)
+            if consejo_comunal_id:
+                qs = qs.filter(id_consejo_comunal=consejo_comunal_id)
+            if genero:
+                qs = qs.filter(sexo=genero)
+            data = list(qs.values("id_habitante", "nombre", "apellido", "sexo", "edad"))
+            return Response({"tipo_reporte": "habitantes_menores_edad", "data": data}, status=200)
 
-            return Response({"tipo_reporte": "viviendas", "data": data}, status=200)
+        # Reporte: Todos los habitantes y su grado de instrucción
+        elif tipo_reporte == "habitantes_grado_instruccion":
+            qs = Habitante.objects.exclude(id_grado_instruccion=None)
+            if consejo_comunal_id:
+                qs = qs.filter(id_consejo_comunal=consejo_comunal_id)
+            if genero:
+                qs = qs.filter(sexo=genero)
+            data = list(qs.values("id_habitante", "nombre", "apellido", "sexo", "id_grado_instruccion__nombre"))
+            return Response({"tipo_reporte": "habitantes_grado_instruccion", "data": data}, status=200)
 
-        elif tipo_reporte == "habitantes_discapacitados":
-            # Definir habitantes_discapacitados correctamente
-            habitantes_discapacitados = Habitante.objects.filter(
-                discapacidad=True)
+        # Reporte: Todas las viviendas con "x cantidad de habitantes"
+        elif tipo_reporte == "viviendas_cantidad_habitantes":
+            cantidad = request.data.get("cantidad")
+            qs = Vivienda.objects.filter(cantidad_habitantes=cantidad)
+            if consejo_comunal_id:
+                qs = qs.filter(id_consejo_comunal=consejo_comunal_id)
+            data = list(qs.values())
+            return Response({"tipo_reporte": "viviendas_cantidad_habitantes", "data": data}, status=200)
 
-            data = []
-            for habitante in habitantes_discapacitados:
-                # Obtener las discapacidades relacionadas con el habitante
-                discapacidades = HabitanteDiscapacidad.objects.filter(id_habitante=habitante.id_habitante).select_related('id_tipo_discapacidad').values(
-                    'id_tipo_discapacidad__nombre', 'id_tipo_discapacidad__descripcion'
-                )
+        # Reporte: Todas las viviendas de un tipo específico
+        elif tipo_reporte == "viviendas_tipo":
+            tipo = request.data.get("tipo")
+            qs = Vivienda.objects.filter(id_tipo_vivienda__nombre=tipo)
+            if consejo_comunal_id:
+                qs = qs.filter(id_consejo_comunal=consejo_comunal_id)
+            data = list(qs.values())
+            return Response({"tipo_reporte": "viviendas_tipo", "data": data}, status=200)
 
-                # Construir la respuesta para cada habitante
-                data.append({
-                    "id": habitante.id_habitante,
-                    "nombre": habitante.primer_nombre,
-                    "apellido": habitante.primer_apellido,
-                    "edad": habitante.edad,
-                    "discapacidades": list(discapacidades)
-                })
+        # Reporte: Todas las viviendas con "x cantidad de familias"
+        elif tipo_reporte == "viviendas_cantidad_familias":
+            cantidad = request.data.get("cantidad")
+            qs = Vivienda.objects.filter(cantidad_familias=cantidad)
+            if consejo_comunal_id:
+                qs = qs.filter(id_consejo_comunal=consejo_comunal_id)
+            data = list(qs.values())
+            return Response({"tipo_reporte": "viviendas_cantidad_familias", "data": data}, status=200)
 
-            return Response({"tipo_reporte": "habitantes_discapacitados", "data": data}, status=200)
+        # Reporte: Todas las viviendas con "todos los tipos de techo"
+        elif tipo_reporte == "viviendas_tipo_techo":
+            tipo = request.data.get("tipo_techo")
+            qs = Vivienda.objects.filter(id_tipo_techo__nombre=tipo)
+            if consejo_comunal_id:
+                qs = qs.filter(id_consejo_comunal=consejo_comunal_id)
+            data = list(qs.values())
+            return Response({"tipo_reporte": "viviendas_tipo_techo", "data": data}, status=200)
+
+        # Reporte: Todas las viviendas con "todos los tipos de pared"
+        elif tipo_reporte == "viviendas_tipo_pared":
+            tipo = request.data.get("tipo_pared")
+            qs = Vivienda.objects.filter(id_tipo_pared__nombre=tipo)
+            if consejo_comunal_id:
+                qs = qs.filter(id_consejo_comunal=consejo_comunal_id)
+            data = list(qs.values())
+            return Response({"tipo_reporte": "viviendas_tipo_pared", "data": data}, status=200)
+
+        # Reporte: Todas las viviendas con "todas las situaciones de la vivienda"
+        elif tipo_reporte == "viviendas_situacion":
+            situacion = request.data.get("situacion")
+            qs = Vivienda.objects.filter(id_situacion_vivienda__nombre=situacion)
+            if consejo_comunal_id:
+                qs = qs.filter(id_consejo_comunal=consejo_comunal_id)
+            data = list(qs.values())
+            return Response({"tipo_reporte": "viviendas_situacion", "data": data}, status=200)
+
+        # Reporte: Todas las viviendas "ocupada / no ocupada"
+        elif tipo_reporte == "viviendas_ocupacion":
+            ocupada = request.data.get("ocupada")  # True/False
+            nombre_ocupacion = "Ocupada" if ocupada else "No Ocupada"
+            qs = Vivienda.objects.filter(id_tipo_ocupacion_vivienda__nombre=nombre_ocupacion)
+            if consejo_comunal_id:
+                qs = qs.filter(id_consejo_comunal=consejo_comunal_id)
+            data = list(qs.values())
+            return Response({"tipo_reporte": "viviendas_ocupacion", "data": data}, status=200)
 
         else:
             return Response({"error": "Tipo de reporte no válido."}, status=400)
-
-# # Solo usuarios autenticados pueden acceder
-# @permission_classes([IsAuthenticated])
-# class ReporteVoceroViewSet(ViewSet):
-#     """
-#     ViewSet para generar reportes de voceros, limitado a su consejo comunal asignado.
-#     """
-
-#     def list(self, request):
-#         """
-#         Genera reportes según los parámetros enviados en la solicitud.
-#         """
-#         # Obtener modelos
-#         ConsejoComunal = apps.get_model('DatosComunidad', 'ConsejoComunal')
-#         Vivienda = apps.get_model('DatosVivienda', 'Vivienda')
-#         Habitante = apps.get_model('DatosHabitante', 'Habitante')
-
-#         # Suponiendo que el usuario tiene un campo relacionado con su consejo comunal
-#         usuario = request.user
-#         # Ajusta según tu modelo
-#         consejo_comunal = getattr(usuario, 'consejo_comunal', None)
-
-#         if not consejo_comunal:
-#             return Response({"error": "No tienes un consejo comunal asignado."}, status=403)
-
-#         # Obtener parámetros de la solicitud
-#         tipo_reporte = request.query_params.get(
-#             "tipo_reporte")  # Tipo de reporte solicitado
-#         rango_edad_min = request.query_params.get(
-#             "edad_min")  # Edad mínima (opcional)
-#         rango_edad_max = request.query_params.get(
-#             "edad_max")  # Edad máxima (opcional)
-#         # Cantidad de personas en viviendas (opcional)
-#         cantidad_personas = request.query_params.get("cantidad_personas")
-#         # Cantidad de familias en viviendas (opcional)
-#         cantidad_familias = request.query_params.get("cantidad_familias")
-
-#         # Generar el reporte según el tipo solicitado
-#         if tipo_reporte == "habitantes":
-#             habitantes = Habitante.objects.filter(
-#                 consejo_comunal=consejo_comunal)
-
-#             # Aplicar filtros adicionales
-#             if rango_edad_min:
-#                 habitantes = habitantes.filter(edad__gte=int(rango_edad_min))
-#             if rango_edad_max:
-#                 habitantes = habitantes.filter(edad__lte=int(rango_edad_max))
-
-#             data = [{"id": h.id, "nombre": h.nombre, "edad": h.edad}
-#                     for h in habitantes]
-#             return Response({"tipo_reporte": "habitantes", "data": data}, status=200)
-
-#         elif tipo_reporte == "habitantes_discapacitados":
-#             habitantes_discapacitados = Habitante.objects.filter(
-#                 consejo_comunal=consejo_comunal, discapacidad__isnull=False
-#             )
-#             data = [{"id": h.id, "nombre": h.nombre, "discapacidad": h.discapacidad}
-#                     for h in habitantes_discapacitados]
-#             return Response({"tipo_reporte": "habitantes_discapacitados", "data": data}, status=200)
-
-#         elif tipo_reporte == "viviendas":
-#             viviendas = Vivienda.objects.filter(
-#                 consejo_comunal=consejo_comunal)
-
-#             # Aplicar filtros adicionales
-#             if cantidad_personas:
-#                 viviendas = viviendas.filter(
-#                     cantidad_personas__gte=int(cantidad_personas))
-#             if cantidad_familias:
-#                 viviendas = viviendas.filter(
-#                     cantidad_familias__gte=int(cantidad_familias))
-
-#             data = [{"id": v.id, "direccion": v.direccion,
-#                      "estado": v.estado} for v in viviendas]
-#             return Response({"tipo_reporte": "viviendas", "data": data}, status=200)
-
-#         elif tipo_reporte == "viviendas_construccion":
-#             viviendas_construccion = Vivienda.objects.filter(
-#                 consejo_comunal=consejo_comunal, estado="En construcción")
-#             data = [{"id": v.id, "direccion": v.direccion}
-#                     for v in viviendas_construccion]
-#             return Response({"tipo_reporte": "viviendas_construccion", "data": data}, status=200)
-
-#         elif tipo_reporte == "viviendas_abandono":
-#             viviendas_abandono = Vivienda.objects.filter(
-#                 consejo_comunal=consejo_comunal, estado="Abandono")
-#             data = [{"id": v.id, "direccion": v.direccion}
-#                     for v in viviendas_abandono]
-#             return Response({"tipo_reporte": "viviendas_abandono", "data": data}, status=200)
-
-#         else:
-#             return Response({"error": "Tipo de reporte no válido."}, status=400)
 
 
 # Esta vista devuelve la cantidad de registros de cada modelo en el proyecto.
