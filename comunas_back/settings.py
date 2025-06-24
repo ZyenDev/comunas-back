@@ -113,8 +113,8 @@ WSGI_APPLICATION = 'comunas_back.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'comunastest',
-        'USER': 'root',
+        'NAME': 'comunasdb',
+        'USER': 'mysql',
         'PASSWORD': 'root',
         'HOST': 'localhost',
         'PORT': '3306',
@@ -123,6 +123,7 @@ DATABASES = {
         },
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

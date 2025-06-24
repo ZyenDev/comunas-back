@@ -7,7 +7,7 @@ router.register(r'general', views.DashboardViewSet,
                 basename='dashboard')
 # router.register(r'administrador', views.ReporteAdministradorViewSet,
 #                 basename='reporte-administrador')
-router.register(r'parlamentario', views.ReporteBasicoViewSet,
+router.register(r'parlamentario', views.ReporteVoceroParlamentario,
                 basename='reporte-parlamentario')
 # router.register(r'vocero', views.ReporteVoceroViewSet,
 #                 basename='reporte-vocero')
