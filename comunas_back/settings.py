@@ -113,8 +113,8 @@ WSGI_APPLICATION = 'comunas_back.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'comunasdb',
-        'USER': 'mysql',
+        'NAME': 'comunastest',
+        'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'localhost',
         'PORT': '3306',

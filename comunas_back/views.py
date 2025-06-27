@@ -198,8 +198,6 @@ def get_users_by_group(request, group_name):
 def constancia_pdf(request):
     Habitante = apps.get_model('DatosHabitante', 'Habitante')
     HabitanteEstadoCivil = apps.get_model('DatosHabitante', 'HabitanteEstadoCivil')
-    # Vivienda = apps.get_model('DatosVivienda', 'Vivienda')
-    # Ubicacion = apps.get_model('DatosUbicacion', 'Ubicacion')
 
     cedula = request.data.get("cedula")
     if not cedula:
@@ -224,6 +222,11 @@ def constancia_pdf(request):
     if vivienda and hasattr(vivienda, 'id_ubicacion') and vivienda.id_ubicacion:
         direccion = getattr(vivienda.id_ubicacion, 'direccion', str(vivienda.id_ubicacion))
 
+    # Consejo Comunal (a través de la vivienda)
+    consejo_comunal = None
+    if vivienda and hasattr(vivienda, 'id_consejo_comunal') and vivienda.id_consejo_comunal:
+        consejo_comunal = vivienda.id_consejo_comunal.nombre
+
     data = {
         "id_habitante": habitante.id_habitante,
         "cedula": habitante.cedula,
@@ -236,5 +239,6 @@ def constancia_pdf(request):
         "estado_civil": estado_civil,
         "numero_vivienda": numero_vivienda,
         "direccion": direccion,
+        "consejo_comunal": consejo_comunal,
     }
     return Response(data, status=200)
