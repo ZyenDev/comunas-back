@@ -190,3 +190,51 @@ def get_users_by_group(request, group_name):
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Group.DoesNotExist:
         return Response({"error": f"El grupo '{group_name}' no existe."}, status=status.HTTP_404_NOT_FOUND)
+    
+
+
+# Esta vista devuelve los datos de un habitante específico para generar un PDF.
+@api_view(['POST'])
+def constancia_pdf(request):
+    Habitante = apps.get_model('DatosHabitante', 'Habitante')
+    HabitanteEstadoCivil = apps.get_model('DatosHabitante', 'HabitanteEstadoCivil')
+    # Vivienda = apps.get_model('DatosVivienda', 'Vivienda')
+    # Ubicacion = apps.get_model('DatosUbicacion', 'Ubicacion')
+
+    cedula = request.data.get("cedula")
+    if not cedula:
+        return Response({"error": "Debe enviar la Cedula."}, status=400)
+    try:
+        habitante = Habitante.objects.get(cedula=cedula)
+    except Habitante.DoesNotExist:
+        return Response({"error": f"Habitante no encontrado para el id: {cedula}"}, status=404)
+
+    # Estado civil
+    estado_civil = None
+    try:
+        estado_civil_obj = HabitanteEstadoCivil.objects.get(id_habitante=habitante)
+        estado_civil = estado_civil_obj.id_estado_civil.nombre
+    except HabitanteEstadoCivil.DoesNotExist:
+        estado_civil = None
+
+    # Vivienda y dirección
+    vivienda = habitante.id_vivienda
+    numero_vivienda = vivienda.numero_vivienda if vivienda else None
+    direccion = None
+    if vivienda and hasattr(vivienda, 'id_ubicacion') and vivienda.id_ubicacion:
+        direccion = getattr(vivienda.id_ubicacion, 'direccion', str(vivienda.id_ubicacion))
+
+    data = {
+        "id_habitante": habitante.id_habitante,
+        "cedula": habitante.cedula,
+        "primer_nombre": habitante.primer_nombre,
+        "segundo_nombre": habitante.segundo_nombre,
+        "primer_apellido": habitante.primer_apellido,
+        "segundo_apellido": habitante.segundo_apellido,
+        "sexo": habitante.sexo,
+        "fecha_nacimiento": habitante.fecha_nacimiento,
+        "estado_civil": estado_civil,
+        "numero_vivienda": numero_vivienda,
+        "direccion": direccion,
+    }
+    return Response(data, status=200)

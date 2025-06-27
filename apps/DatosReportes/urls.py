@@ -16,5 +16,4 @@ router.register(r'vocero', views.ReporteVocero,
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('pdf/', views.HabitantePDFView.as_view(), name='constancia-pdf'),  # Agrega esta línea
 ]

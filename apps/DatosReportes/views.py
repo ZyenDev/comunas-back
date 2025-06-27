@@ -33,7 +33,8 @@ class ReporteAdministrador(ViewSet):
                 "cedula", 
                 "primer_nombre", 
                 "primer_apellido", 
-                "sexo", 
+                "sexo",
+                "pertenece_etnia",
                 "habitanteetnia__id_etnia__nombre"
             ))
             return Response({"tipo_reporte": "habitantes_etnia", "data": data}, status=200)
@@ -116,8 +117,8 @@ class ReporteAdministrador(ViewSet):
             ))
             return Response({"tipo_reporte": "habitantes_menores_edad", "data": data}, status=200)
 
-        # Reporte: Todos los habitantes y su grado de instrucción
-        elif tipo_reporte == "habitantes_grado_instruccion":
+        # Reporte: Todos los habitantes y su nivel de estudio
+        elif tipo_reporte == "habitantes_nivel_estudio":
             qs = Habitante.objects.exclude(habitantenivelestudio=None)
             if comuna_id:
                 qs = qs.filter(id_vivienda__id_consejo_comunal__id_comuna=comuna_id)
@@ -131,13 +132,13 @@ class ReporteAdministrador(ViewSet):
                 "sexo",
                 "habitantenivelestudio__id_nivel_estudio__nombre"
             ))
-            return Response({"tipo_reporte": "habitantes_grado_instruccion", "data": data}, status=200)
+            return Response({"tipo_reporte": "habitantes_nivel_estudio", "data": data}, status=200)
 
-        # Reporte: Todos los habitantes y su grado de instrucción específico
-        elif tipo_reporte == "habitantes_grado_instruccion_especifico":
-            grado_nombre = request.data.get("grado_instruccion")
+        # Reporte: Todos los habitantes y su nivel de estudio específico
+        elif tipo_reporte == "habitantes_nivel_estudio_especifico":
+            nivel_nombre = request.data.get("nivel_estudio")
             qs = Habitante.objects.filter(
-                habitantenivelestudio__id_nivel_estudio__nombre=grado_nombre
+                habitantenivelestudio__id_nivel_estudio__nombre=nivel_nombre
             )
             if comuna_id:
                 qs = qs.filter(id_vivienda__id_consejo_comunal__id_comuna=comuna_id)
@@ -151,7 +152,7 @@ class ReporteAdministrador(ViewSet):
                 "sexo",
                 "habitantenivelestudio__id_nivel_estudio__nombre"
             ))
-            return Response({"tipo_reporte": "habitantes_grado_instruccion_especifico", "data": data}, status=200)
+            return Response({"tipo_reporte": "habitantes_nivel_estudio_especifico", "data": data}, status=200)
 
         # Reporte: Todas las viviendas con "x cantidad de habitantes"
         elif tipo_reporte == "viviendas_cantidad_habitantes":
@@ -355,8 +356,8 @@ class ReporteParlamentario(ViewSet):
             ))
             return Response({"tipo_reporte": "habitantes_menores_edad", "data": data}, status=200)
 
-        # Reporte: Todos los habitantes y su grado de instrucción
-        elif tipo_reporte == "habitantes_grado_instruccion":
+        # Reporte: Todos los habitantes y su nivel de estudio
+        elif tipo_reporte == "habitantes_nivel_estudio":
             qs = Habitante.objects.exclude(habitantenivelestudio=None)
             if consejo_comunal_id:
                 qs = qs.filter(id_vivienda__id_consejo_comunal=consejo_comunal_id)
@@ -370,13 +371,13 @@ class ReporteParlamentario(ViewSet):
                 "sexo",
                 "habitantenivelestudio__id_nivel_estudio__nombre"
             ))
-            return Response({"tipo_reporte": "habitantes_grado_instruccion", "data": data}, status=200)
+            return Response({"tipo_reporte": "habitantes_nivel_estudio", "data": data}, status=200)
 
-        # Reporte: Todos los habitantes y su grado de instrucción específico
-        elif tipo_reporte == "habitantes_grado_instruccion_especifico":
-            grado_nombre = request.data.get("grado_instruccion")
+        # Reporte: Todos los habitantes y su nivel de estudio específico
+        elif tipo_reporte == "habitantes_nivel_estudio_especifico":
+            nivel_nombre = request.data.get("nivel_estudio")
             qs = Habitante.objects.filter(
-                habitantenivelestudio__id_nivel_estudio__nombre=grado_nombre
+                habitantenivelestudio__id_nivel_estudio__nombre=nivel_nombre
             )
             if consejo_comunal_id:
                 qs = qs.filter(id_vivienda__id_consejo_comunal=consejo_comunal_id)
@@ -390,7 +391,7 @@ class ReporteParlamentario(ViewSet):
                 "sexo",
                 "habitantenivelestudio__id_nivel_estudio__nombre"
             ))
-            return Response({"tipo_reporte": "habitantes_grado_instruccion_especifico", "data": data}, status=200)
+            return Response({"tipo_reporte": "habitantes_nivel_estudio_especifico", "data": data}, status=200)
 
         # Reporte: Todas las viviendas con "x cantidad de habitantes"
         elif tipo_reporte == "viviendas_cantidad_habitantes":
@@ -594,8 +595,8 @@ class ReporteVocero(ViewSet):
             ))
             return Response({"tipo_reporte": "habitantes_menores_edad", "data": data}, status=200)
 
-        # Reporte: Todos los habitantes y su grado de instrucción
-        elif tipo_reporte == "habitantes_grado_instruccion":
+        # Reporte: Todos los habitantes y su nivel de estudio
+        elif tipo_reporte == "habitantes_nivel_estudio":
             qs = Habitante.objects.exclude(habitantenivelestudio=None)
             if consejo_comunal_id:
                 qs = qs.filter(id_vivienda__id_consejo_comunal=consejo_comunal_id)
@@ -609,13 +610,13 @@ class ReporteVocero(ViewSet):
                 "sexo",
                 "habitantenivelestudio__id_nivel_estudio__nombre"
             ))
-            return Response({"tipo_reporte": "habitantes_grado_instruccion", "data": data}, status=200)
+            return Response({"tipo_reporte": "habitantes_nivel_estudio", "data": data}, status=200)
 
-        # Reporte: Todos los habitantes y su grado de instrucción específico
-        elif tipo_reporte == "habitantes_grado_instruccion_especifico":
-            grado_nombre = request.data.get("grado_instruccion")
+        # Reporte: Todos los habitantes y su nivel de estudio específico
+        elif tipo_reporte == "habitantes_nivel_estudio_especifico":
+            nivel_nombre = request.data.get("nivel_estudio")
             qs = Habitante.objects.filter(
-                habitantenivelestudio__id_nivel_estudio__nombre=grado_nombre
+                habitantenivelestudio__id_nivel_estudio__nombre=nivel_nombre
             )
             if consejo_comunal_id:
                 qs = qs.filter(id_vivienda__id_consejo_comunal=consejo_comunal_id)
@@ -629,7 +630,7 @@ class ReporteVocero(ViewSet):
                 "sexo",
                 "habitantenivelestudio__id_nivel_estudio__nombre"
             ))
-            return Response({"tipo_reporte": "habitantes_grado_instruccion_especifico", "data": data}, status=200)
+            return Response({"tipo_reporte": "habitantes_nivel_estudio_especifico", "data": data}, status=200)
 
         # Reporte: Todas las viviendas con "x cantidad de habitantes"
         elif tipo_reporte == "viviendas_cantidad_habitantes":
@@ -754,51 +755,3 @@ class DashboardViewSet(ViewSet):
         }
 
         return Response(report, status=200)
-
-# Esta vista devuelve los datos de un habitante específico para generar un PDF.
-@permission_classes([IsAuthenticated])
-class HabitantePDFView(APIView):
-    def post(self, request):
-        habitante_id = request.data.get("id_habitante")
-        if not habitante_id:
-            return Response({"error": "Debe enviar el id_habitante"}, status=400)
-        Habitante = apps.get_model('DatosHabitante', 'Habitante')
-        HabitanteEstadoCivil = apps.get_model('DatosHabitante', 'HabitanteEstadoCivil')
-        Vivienda = apps.get_model('DatosVivienda', 'Vivienda')
-        Ubicacion = apps.get_model('DatosUbicacion', 'Ubicacion')
-
-        try:
-            habitante = Habitante.objects.get(id_habitante=habitante_id)
-        except Habitante.DoesNotExist:
-            return Response({"error": "Habitante no encontrado"}, status=404)
-
-        # Estado civil
-        estado_civil = None
-        try:
-            estado_civil_obj = HabitanteEstadoCivil.objects.get(id_habitante=habitante)
-            estado_civil = estado_civil_obj.id_estado_civil.nombre
-        except HabitanteEstadoCivil.DoesNotExist:
-            estado_civil = None
-
-        # Vivienda y dirección
-        vivienda = habitante.id_vivienda
-        numero_vivienda = vivienda.numero_vivienda if vivienda else None
-        direccion = None
-        if vivienda and vivienda.id_ubicacion:
-            direccion = vivienda.id_ubicacion.direccion if hasattr(vivienda.id_ubicacion, 'direccion') else str(vivienda.id_ubicacion)
-
-        data = {
-            "id_habitante": habitante.id_habitante,
-            "cedula": habitante.cedula,
-            "primer_nombre": habitante.primer_nombre,
-            "segundo_nombre": habitante.segundo_nombre,
-            "primer_apellido": habitante.primer_apellido,
-            "segundo_apellido": habitante.segundo_apellido,
-            "sexo": habitante.sexo,
-            "fecha_nacimiento": habitante.fecha_nacimiento,
-            "estado_civil": estado_civil,
-            "numero_vivienda": numero_vivienda,
-            "direccion": direccion,
-            # Agrega aquí otros campos que necesites
-        }
-        return Response(data, status=200)
