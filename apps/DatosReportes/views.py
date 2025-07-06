@@ -409,9 +409,14 @@ class ReporteParlamentario(ViewSet):
             data = list(qs.values("id_vivienda", "numero_vivienda", "cantidad_familias"))
             return Response({"tipo_reporte": "viviendas_cantidad_familias", "data": data}, status=200)
         
-        # Reporte: Todas las viviendas de un tipo específico
+        # Reporte: Todas las viviendas de un tipo específicos
         elif tipo_reporte == "viviendas_tipo":
+            print("this called")
+            tipo_vivienda_id = request.data.get("id_tipo_vivienda")
+            print(tipo_vivienda_id)
             qs = Vivienda.objects.all()
+            if tipo_vivienda_id:
+                qs = qs.filter(id_tipo_vivienda=tipo_vivienda_id)
             if consejo_comunal_id:
                 qs = qs.filter(id_consejo_comunal=consejo_comunal_id)
             data = list(qs.values(
@@ -733,9 +738,10 @@ class DashboardViewSet(ViewSet):
         Comunidad = apps.get_model('DatosComunidad', 'Comuna')
         Vivienda = apps.get_model('DatosVivienda', 'Vivienda')
         ConsejoComunal = apps.get_model('DatosComunidad', 'ConsejoComunal')
+        Habitante = apps.get_model('DatosHabitante', 'Habitante')
 
-        numero_habitantes = User.objects.filter(
-            groups__name="Habitante").count()
+    
+        numero_habitantes = Habitante.objects.count()
         numero_parlamentarios = User.objects.filter(
             groups__name="Parlamentario").count()
         numero_voceros = User.objects.filter(groups__name="Vocero").count()
