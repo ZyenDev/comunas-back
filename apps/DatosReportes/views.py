@@ -156,10 +156,14 @@ class ReporteAdministrador(ViewSet):
 
         # Reporte: Todas las viviendas con "x cantidad de habitantes"
         elif tipo_reporte == "viviendas_cantidad_habitantes":
+            print("this got called")
             qs = Vivienda.objects.all()
+            tipo_vivienda_id = request.data.get("id_tipo_vivienda")
+            if tipo_vivienda_id:
+                qs = qs.filter(id_tipo_vivienda=tipo_vivienda_id)
             if comuna_id:
                 qs = qs.filter(id_consejo_comunal__id_comuna=comuna_id)
-            data = list(qs.values("id_vivienda", "numero_vivienda", "cantidad_habitantes"))
+            data = list(qs.values("id_vivienda", "numero_vivienda", "cantidad_habitantes", "id_tipo_vivienda__descripcion"))
             return Response({"tipo_reporte": "viviendas_cantidad_habitantes", "data": data}, status=200)
 
         # Reporte: Todas las viviendas con "x cantidad de familias"
@@ -395,10 +399,13 @@ class ReporteParlamentario(ViewSet):
 
         # Reporte: Todas las viviendas con "x cantidad de habitantes"
         elif tipo_reporte == "viviendas_cantidad_habitantes":
+            tipo_vivienda_id = request.data.get("id_tipo_vivienda")
             qs = Vivienda.objects.all()
+            if tipo_vivienda_id:
+                qs = qs.filter(id_tipo_vivienda=tipo_vivienda_id)
             if consejo_comunal_id:
                 qs = qs.filter(id_consejo_comunal=consejo_comunal_id)
-            data = list(qs.values("id_vivienda", "numero_vivienda", "cantidad_habitantes"))
+            data = list(qs.values("id_vivienda", "numero_vivienda", "cantidad_habitantes", "id_tipo_vivienda__descripcion")) 
             return Response({"tipo_reporte": "viviendas_cantidad_habitantes", "data": data}, status=200)
 
         # Reporte: Todas las viviendas con "x cantidad de familias"
@@ -639,10 +646,14 @@ class ReporteVocero(ViewSet):
 
         # Reporte: Todas las viviendas con "x cantidad de habitantes"
         elif tipo_reporte == "viviendas_cantidad_habitantes":
+            print("this got called")
             qs = Vivienda.objects.all()
+            tipo_vivienda_id = request.data.get("id_tipo_vivienda")
+            if tipo_vivienda_id:
+                qs = qs.filter(id_tipo_vivienda=tipo_vivienda_id)
             if consejo_comunal_id:
-                qs = qs.filter(id_consejo_comunal=consejo_comunal_id)
-            data = list(qs.values("id_vivienda", "numero_vivienda", "cantidad_habitantes"))
+                qs = qs.filter(id_consejo_comunal__id_comuna=consejo_comunal_id)
+            data = list(qs.values("id_vivienda", "numero_vivienda", "cantidad_habitantes", "id_tipo_vivienda__descripcion"))
             return Response({"tipo_reporte": "viviendas_cantidad_habitantes", "data": data}, status=200)
 
         # Reporte: Todas las viviendas con "x cantidad de familias"
