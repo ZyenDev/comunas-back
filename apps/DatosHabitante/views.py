@@ -56,12 +56,22 @@ class HabitanteViewSet(viewsets.ModelViewSet):
     queryset = Habitante.objects.all()
     serializer_class = HabitanteSerializer
 
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+        habitante = self.get_object()
+        if not hasattr(habitante, 'habitantediscapacidad'):
+            tipo_discapacidad_default = TipoDiscapacidad.objects.first()
+            HabitanteDiscapacidad.objects.create(
+                id_habitante=habitante,
+                id_tipo_discapacidad=tipo_discapacidad_default  # Usa un valor válido
+            )
+        return response
+
 @permission_classes([IsAuthenticated])
 class HabitanteDiscapacidadViewSet(viewsets.ModelViewSet):
     queryset = HabitanteDiscapacidad.objects.all()
     serializer_class = HabitanteDiscapacidadSerializer
 
-@permission_classes([IsAuthenticated])
 class HabitanteEstadoCivilViewSet(viewsets.ModelViewSet):
     queryset = HabitanteEstadoCivil.objects.all()
     serializer_class = HabitanteEstadoCivilSerializer

@@ -56,17 +56,33 @@ class TipoSangreSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class HabitanteEtniaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HabitanteEtnia
+        fields = '__all__'
+
+
 class HabitanteSerializer(serializers.ModelSerializer):
+    discapacidad = serializers.BooleanField(required=True)  # Booleano del modelo
+    tipo_discapacidad = TipoDiscapacidadSerializer(
+        source='habitantediscapacidad.id_tipo_discapacidad', read_only=True)  # Relación
+
     tipo_sangre = TipoSangreSerializer(
         source='habitantetiposangre.id_tipo_sangre', read_only=True)
     celular = CelularSerializer(
         source='celular_set', many=True, read_only=True)
-    estado_civil = serializers.StringRelatedField(
+    estado_civil =  EstadoCivilSerializer(
         source='habitanteestadocivil.id_estado_civil', read_only=True)
+    nivel_estudio = NivelEstudioSerializer(
+        source='habitantenivelestudio.id_nivel_estudio', read_only=True)
+    etnia = EtniaSerializer(
+        source='habitanteetnia.id_etnia', read_only=True)
+    habitante_etnia = HabitanteEtniaSerializer(
+        source='habitanteetnia', read_only=True)
 
     class Meta:
         model = Habitante
-        fields = '__all__'  # Include all fields from Habitante and the related fields
+        fields = '__all__'  # O lista explícita de campos + 'tipo_discapacidad'
 
 
 class HabitanteDiscapacidadSerializer(serializers.ModelSerializer):
@@ -78,12 +94,6 @@ class HabitanteDiscapacidadSerializer(serializers.ModelSerializer):
 class HabitanteEstadoCivilSerializer(serializers.ModelSerializer):
     class Meta:
         model = HabitanteEstadoCivil
-        fields = '__all__'
-
-
-class HabitanteEtniaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = HabitanteEtnia
         fields = '__all__'
 
 
